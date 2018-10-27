@@ -1,0 +1,48 @@
+<html>
+<head>
+  <script src="socket.io/socket.io.js"></script>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" ></script>
+  <script src="moment.js"></script>
+  <script src="deparam.js"></script>
+  <link rel="stylesheet" href="/css/style.css"/>
+</head>
+  <body class="chat">
+      <div class="chat__sidebar">
+          <h3>Chat app</h3>
+          <div id="users"></div>
+      </div>
+
+      <div class="chat__main">
+            <ol id="messages" class="chat__messages"> </ol>
+           
+            <div class="chat__footer">
+                    <form id="message-form">
+                            <input name="message" type="text" placeholder="message"/>
+                            <button>Send</button>
+                           </form>
+
+            </div>
+           
+      </div>
+  
+      
+      <script id="message-template" type="text/template">
+      <li class="message" >
+          <div class="message__title">
+            <h4>{{from}}</h4>
+            <span>{{time}}</span>
+          </div>
+
+          <p>{{message}}</p>
+    </br>
+
+    
+    </script>
+   
+
+<script src="index.js" >  </script>
+<script src="moustache.js"></script>
+    </body>
+
+
+</html>
