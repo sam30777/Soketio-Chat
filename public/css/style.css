@@ -6,7 +6,48 @@
     font-weight: 300;
     font-size: .95rem;
   }
+
+  #users {
+    height: 300px;
+    overflow-y: scroll;
+  }
+
+  #rooms {
+    height: 200px;
+    overflow-y: scroll;
+  }
   
+  .chat__nav {
+    background-color: #e6eaee;
+    height: 20px;
+    display: flex;
+    overflow-x: scroll;
+  }
+
+  .chat__nav-tab {
+    width: 100px;
+    text-align: center;
+    height: 100%;
+  }
+
+  .chat__nav-tab.active {
+    background-color: white;
+  }
+
+  .chat__nav-name {
+    cursor: pointer;
+  }
+
+  .chat__nav-name:hover {
+    color:blue;
+  }
+
+  .chat__nav-close {
+color: red;
+margin-left: 4px;
+cursor: pointer;
+  }
+
   ul, li {
     list-style-position: inside;
   }

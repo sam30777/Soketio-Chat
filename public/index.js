@@ -1,4 +1,10 @@
-
+const allUsers = [];
+const allTabs = {
+    'TABhome': {
+        name: 'home',
+        close: false,
+    },
+};
 function scrollToBottom(){
     var mesages = jQuery('#messages');
     var newMessage = mesages.children('li:last-child');
@@ -13,6 +19,36 @@ function scrollToBottom(){
     if(clientHeight + scrollTop + newMessageHeight + lastMessageHeight >= scrollHeight) {
         mesages.scrollTop(scrollHeight);
     }
+}
+
+function addTab(ID, name) {
+    const nav = $('.chat__nav');
+    let newTab = 
+    `<div id="${ID}" class="chat__nav-tab">
+        <span class="chat__nav-name" onClick="selectTab('${ID}')">${name}</span>
+        <b class="chat__nav-close" onClick="closeTab('${ID}')">x</b>
+    </div>`;
+    nav.append(newTab);
+}
+
+function selectTab(ID) {
+setTabActive(ID);
+}
+
+function closeTab(ID) {
+    if($(`#${ID}`).hasClass('active')) {
+        setTabActive('all');
+    }
+    const element = document.getElementById(ID);
+    element.parentNode.removeChild(element);
+
+    
+}
+
+function setTabActive(tabID) {
+    if($('.chat__nav-tab.active')[0].id === tabID) return;
+    $('.chat__nav-tab.active').removeClass('active');
+    $(`#${tabID}`).addClass('active');
 }
 
 let socket = io();
@@ -39,10 +75,24 @@ let socket = io();
             var ol = jQuery('<ol></ol>')
 
             usersList.forEach(element => {
-                ol.append(jQuery('<li></li>').text(element));
+                ol.append(jQuery(`<li id="${element}" class="users__list-item"></li>`).text(element));
             });
 
+            
             jQuery('#users').html(ol);
+
+            jQuery('.users__list-item').on('click', function(e) {
+                const ID = `TAB${e.target.id}`;
+                const name = e.target.innerHTML;
+                allTabs[ID] = {
+                    name,
+                };
+
+                console.log(ID, name)
+
+                addTab(ID, name);
+
+            })
         })
         
        
