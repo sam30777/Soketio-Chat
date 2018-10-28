@@ -68,6 +68,11 @@ let socket = io();
             })
            
         })
+        
+        jQuery('#createGroupId').on('click',function(e){
+            console.log("create group is clicked-->");
+            
+        })
 
         socket.on('updatedUsers',function(usersList){
             console.log("users list is this.......>",usersList);
@@ -78,6 +83,7 @@ let socket = io();
                 ol.append(jQuery(`<li id="${element}" class="users__list-item"></li>`).text(element));
             });
 
+            
             
             jQuery('#users').html(ol);
 
@@ -94,6 +100,11 @@ let socket = io();
 
             })
         })
+
+        socket.on('newGroup',(groupList)=>{
+            //  room to be added in list
+            
+        })
         
        
         socket.on('newMessage',function(newMessage){
@@ -103,7 +114,7 @@ let socket = io();
             var html = Mustache.render(templateData,{
                time :   messageTime ,
                from :    newMessage.from , 
-                message : newMessage.message
+               message : newMessage.message
             });
 
             jQuery('#messages').append(html)
@@ -124,12 +135,10 @@ let socket = io();
             console.log("in form submit")
             e.preventDefault()
             socket.emit('createMessage',{
-                from : 'User',
-                message : jQuery('[name=message]').val()
-
+                message : jQuery('[name=message]').val() , 
+                to : jQuery('.chat__nav-tab.active span')[0].innerHTML
+                
             },function(data){
-               
-                  
                
             });
 

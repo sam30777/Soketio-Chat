@@ -11,20 +11,38 @@ class Users {
         return user;
     }
 
-    getUserLIst(room){
+    getUserLIstPerRoom(room){
         console.log("room is this--->",room);
         var users = this.users.filter((user)=>{
             return user.room === room
         })
-
+        
         console.log("user for that room",users);
         var userNames = users.map((user)=>{
             return user.userName;
         })
-
-        
-
         return userNames;
+    }
+
+    getUserListAll(name){
+
+       let users = this.users.filter((user)=>{
+               return   user.userName !== name 
+            })
+   
+        let userNames = users.map((user)=>{
+            return user.userName
+        })
+        return userNames
+    }
+
+    getUserByUserName(name){
+        console.log("in getuser by name--?",name);
+        var users = this.users.filter((user)=>{
+            return user.userName === name
+        })
+        console.log("users are these--->",users);
+        return users[0];
     }
 
     removeUser(id){
@@ -41,7 +59,6 @@ class Users {
     }
 
     getUser(id){
-        
         return this.users.filter((user)=>{
             return user.id == id 
         })[0]

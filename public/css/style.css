@@ -21,7 +21,7 @@
     background-color: #e6eaee;
     height: 20px;
     display: flex;
-    overflow-x: scroll;
+    /* overflow-x: scroll; */
   }
 
   .chat__nav-tab {

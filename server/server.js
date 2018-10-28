@@ -25,7 +25,10 @@ let utils = require('./../utils/utils');
 
 app.use(express.static(indexPath));
 
+let unique = 'sakjslkahfilknalknfakfdlnsdklf';
 
+
+let rooms = {};
 
 
 io.on('connection',(socket)=>{
@@ -33,35 +36,71 @@ io.on('connection',(socket)=>{
     socket.emit('newMessage',utils.generateMessage('Admin','Welcome to chat app'));
     socket.on('join',(data,callback)=>{
         console.log("data is this",data)
-        if(typeof data.name != 'string' || data.name.length <=0 ||
-           typeof data.room != 'string' || data.room.length <=0 ){
+        if(typeof data.name != 'string' || data.name.length <=0){
            return  callback("Data provided is invalid");
-           } else {
-               socket.join(data.room); 
-               users.removeUser(socket.id);
-               users.addUser(socket.id,data.room,data.name);
-               io.to(data.room).emit('updatedUsers',users.getUserLIst(data.room));
-               socket.broadcast.to(data.room).emit('newMessage',utils.generateMessage('Admin',`${data.name} has joined`));
-               return callback(null);
+           }
+            let user = users.getUserByUserName(data.name);
+            if(user){
+                return callback("UserName  already exist")
             }
-     
+               socket.join('EveryBody'+unique); 
+               users.removeUser(socket.id);
+               users.addUser(socket.id,'',data.name);
+               io.to('EveryBody'+unique).emit('updatedUsers',users.getUserListAll());
+               socket.broadcast.to('EveryBody'+unique).emit('newMessage',utils.generateMessage('Admin',`${data.name} has joined`));
+               return callback(null);
+            
         })
 
         socket.on('createMessage',(message,callBack)=>{
             console.log("in create message",message);
             let user = users.getUser(socket.id);
+            let targetUserSocketId = users.getUserByUserName(message.to);
             let messageObj = utils.generateMessage(user.userName,message.message);
-            io.to(user.room).emit('newMessage',messageObj);
+            if(targetUserSocketId){
+                console.log("target socket id isthis-->",targetUserSocketId.id);
+                io.to(targetUserSocketId.id).emit('newMessage',messageObj);
+                io.to(user.id).emit('newMessage',messageObj);
+            
+            }else{
+                io.to(user.id).emit('newMessage',messageObj);
+            }
             callBack('message emited');  
-    })
+      })
+
+      socket.on('joinRoom',(data,callback)=>{
+        let user     = user.getUser(socket.id);   
+        if(!data.room) {
+           return  callback('No Group name is provided');
+        }
+       
+        if(rooms.hasOwnProperty(data.room)){
+            if(rooms[data.room].hasOwnProperty(user.userName)){
+                rooms[data.room][user.userName] = user.id;
+            }else{
+                return  callback('User already added in group');
+            }
+            
+        }
+        else {
+            rooms[data.room][user.userName] = user.id
+        }
+        socket.join(data.room);
+        let currentRooms = Object.keys(rooms);
+        socket.emit('newGroup',currentRooms)
+        
+      })
+
+     
 
       socket.on('disconnect',()=>{
           console.log("user disconnected");
           var user = users.removeUser(socket.id);
           console.log("removed user is this...->",user);
           if(user){
-            io.to(user.room).emit('updatedUsers',users.getUserLIst(user.room));
-            io.to(user.room).emit('newMessage',utils.generateMessage('Admin',`${user.userName} has left`));
+            io.to(user.room).emit('updatedUsers',users.getUserListAll());
+            io.to('EveryBody'+unique).emit('newMessage',utils.generateMessage('Admin',`${user.userName} has left`));
+           // io.to(user.room).emit('newMessage',utils.generateMessage('Admin',`${user.userName} has left`));
           }
           
       })
