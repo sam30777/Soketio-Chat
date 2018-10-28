@@ -8,11 +8,18 @@
 </head>
   <body class="chat">
       <div class="chat__sidebar">
-          <h3>Chat app</h3>
+          <h3>Chat app</h3><br />
+          <h3>Online</h3>
           <div id="users"></div>
+          <h3>Rooms</h3>
+          <div id="rooms"></div>
       </div>
 
       <div class="chat__main">
+            <section class="chat__nav"> 
+                    <div id="all" class="chat__nav-tab"><span class="chat__nav-name" onClick="selectTab('all')">*all</span></div>
+                    <div id="potato" class="chat__nav-tab active"><span class="chat__nav-name" onClick="selectTab('potato')">potato</span> <b class="chat__nav-close" onClick="closeTab('potato')">x</b></div>
+                </section>
             <ol id="messages" class="chat__messages"> </ol>
            
             <div class="chat__footer">
