@@ -25,7 +25,7 @@ let utils = require('./../utils/utils');
 
 app.use(express.static(indexPath));
 
-let unique = 'sakjslkahfilknalknfakfdlnsdklf';
+//let unique = 'sakjslkahfilknalknfakfdlnsdklf';
 
 
 let rooms = {};
@@ -43,19 +43,21 @@ io.on('connection',(socket)=>{
             if(user){
                 return callback("UserName  already exist")
             }
-               socket.join('EveryBody'+unique); 
+               socket.join('EveryBody'); 
                users.removeUser(socket.id);
                users.addUser(socket.id,'',data.name);
-               io.to('EveryBody'+unique).emit('updatedUsers',users.getUserListAll());
-               socket.broadcast.to('EveryBody'+unique).emit('newMessage',utils.generateMessage('Admin',`${data.name} has joined`));
+               io.to('EveryBody').emit('updatedUsers',users.getUserListAll());
+               socket.broadcast.to('EveryBody').emit('newMessage',utils.generateMessage('Admin',`${data.name} has joined`));
                return callback(null);
-            
         })
-
         socket.on('createMessage',(message,callBack)=>{
             console.log("in create message",message);
+
             let user = users.getUser(socket.id);
-            let targetUserSocketId = users.getUserByUserName(message.to);
+            if(message.to === 'EveryBody'){
+                io.to('EveryBody').emit('newMessage',utils.generateMessage(user.userName,message.message));
+            }else{
+                let targetUserSocketId = users.getUserByUserName(message.to);
             let messageObj = utils.generateMessage(user.userName,message.message);
             if(targetUserSocketId){
                 console.log("target socket id isthis-->",targetUserSocketId.id);
@@ -65,10 +67,12 @@ io.on('connection',(socket)=>{
             }else{
                 io.to(user.id).emit('newMessage',messageObj);
             }
+            }
+            
             callBack('message emited');  
       })
 
-      socket.on('joinRoom',(data,callback)=>{
+      socket.on('joinRoom',(data,callback)=>{c
         let user     = user.getUser(socket.id);   
         if(!data.room) {
            return  callback('No Group name is provided');
@@ -80,7 +84,6 @@ io.on('connection',(socket)=>{
             }else{
                 return  callback('User already added in group');
             }
-            
         }
         else {
             rooms[data.room][user.userName] = user.id
@@ -99,10 +102,9 @@ io.on('connection',(socket)=>{
           console.log("removed user is this...->",user);
           if(user){
             io.to(user.room).emit('updatedUsers',users.getUserListAll());
-            io.to('EveryBody'+unique).emit('newMessage',utils.generateMessage('Admin',`${user.userName} has left`));
+            io.to('EveryBody').emit('newMessage',utils.generateMessage('Admin',`${user.userName} has left`));
            // io.to(user.room).emit('newMessage',utils.generateMessage('Admin',`${user.userName} has left`));
-          }
-          
+          }  
       })
        
     })

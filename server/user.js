@@ -31,7 +31,10 @@ class Users {
             })
    
         let userNames = users.map((user)=>{
-            return user.userName
+            return  {
+                id : user.id,
+                userName : user.userName
+            }
         })
         return userNames
     }

@@ -5,6 +5,10 @@ const allTabs = {
         close: false,
     },
 };
+
+
+//let unique = 'sakjslkahfilknalknfakfdlnsdklf';
+
 function scrollToBottom(){
     var mesages = jQuery('#messages');
     var newMessage = mesages.children('li:last-child');
@@ -70,21 +74,18 @@ let socket = io();
         })
         
         jQuery('#createGroupId').on('click',function(e){
-            console.log("create group is clicked-->");
-            
+            console.log("create group is clicked-->");      
         })
-
         socket.on('updatedUsers',function(usersList){
             console.log("users list is this.......>",usersList);
 
-            var ol = jQuery('<ol></ol>')
-
+            var ol = jQuery('<ol></ol>');
             usersList.forEach(element => {
-                ol.append(jQuery(`<li id="${element}" class="users__list-item"></li>`).text(element));
+                if(element.id !== socket.id){
+                    ol.append(jQuery(`<li id="${element.userName}" class="users__list-item"></li>`).text(element.userName));
+                }
             });
 
-            
-            
             jQuery('#users').html(ol);
 
             jQuery('.users__list-item').on('click', function(e) {
@@ -93,7 +94,7 @@ let socket = io();
                 allTabs[ID] = {
                     name,
                 };
-
+                console.log("tab clicked-->",name)
                 console.log(ID, name)
 
                 addTab(ID, name);
@@ -132,12 +133,12 @@ let socket = io();
 
 
         jQuery('#message-form').on('submit',function(e){
-            console.log("in form submit")
+            console.log("in form submit",jQuery('.chat__nav-tab.active span')[0].innerHTML );
             e.preventDefault()
+            let to = jQuery('.chat__nav-tab.active span')[0].innerHTML ;
             socket.emit('createMessage',{
                 message : jQuery('[name=message]').val() , 
-                to : jQuery('.chat__nav-tab.active span')[0].innerHTML
-                
+                to : to  
             },function(data){
                
             });
