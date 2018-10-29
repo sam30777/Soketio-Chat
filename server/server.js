@@ -72,27 +72,27 @@ io.on('connection',(socket)=>{
             callBack('message emited');  
       })
 
-      socket.on('joinRoom',(data,callback)=>{c
-        let user     = user.getUser(socket.id);   
-        if(!data.room) {
-           return  callback('No Group name is provided');
-        }
+    //   socket.on('joinRoom',(data,callback)=>{c
+    //     let user     = user.getUser(socket.id);   
+    //     if(!data.room) {
+    //        return  callback('No Group name is provided');
+    //     }
        
-        if(rooms.hasOwnProperty(data.room)){
-            if(rooms[data.room].hasOwnProperty(user.userName)){
-                rooms[data.room][user.userName] = user.id;
-            }else{
-                return  callback('User already added in group');
-            }
-        }
-        else {
-            rooms[data.room][user.userName] = user.id
-        }
-        socket.join(data.room);
-        let currentRooms = Object.keys(rooms);
-        socket.emit('newGroup',currentRooms)
+    //     if(rooms.hasOwnProperty(data.room)){
+    //         if(rooms[data.room]['users'].hasOwnProperty(user.userName)){
+    //             rooms[data.room]['users'][user.userName] = user.id;
+    //         }else{
+    //             return  callback('User already added in group');
+    //         }
+    //     }
+    //     else {
+    //         rooms[data.room]['users'][user.userName] = user.id
+    //     }
+    //     socket.join(data.room);
+    //     let currentRooms = Object.keys(rooms);
+    //     socket.emit('newGroup',currentRooms)
         
-      })
+    //   })
 
      
 
